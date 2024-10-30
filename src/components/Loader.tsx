@@ -5,7 +5,7 @@ import React from "react";
 import { appleImg } from "@/utils";
 
 const Loader = () => {
-  const { progress } = useProgress(); // This reads progress only
+  const { progress } = useProgress();
 
   return (
     <Html>

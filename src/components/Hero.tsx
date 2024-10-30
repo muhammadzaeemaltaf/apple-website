@@ -7,28 +7,23 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 const Hero = () => {
-  const [videoSrc, setVideoSrc] = useState(
-    window.innerWidth < 760 ? smallHeroVideo : heroVideo
-  );
+  // Define videoSrc as a string or null
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null); // Use null as the initial value for ref
 
-  const videoRef = useRef<HTMLVideoElement | any>();
-
-
-  const handleVideoSrcSet = () => {
-    if (window.innerWidth < 760 ) {
-        setVideoSrc(smallHeroVideo)
-    }else{
-      setVideoSrc(heroVideo)
-    }
-  }
-
+  // Set video source based on window width
   useEffect(() => {
-    window.addEventListener('resize', handleVideoSrcSet);
+    const handleVideoSrcSet = () => {
+      setVideoSrc(window.innerWidth < 760 ? smallHeroVideo : heroVideo);
+    };
+
+    handleVideoSrcSet(); // Set the initial video source
+    window.addEventListener("resize", handleVideoSrcSet);
 
     return () => {
-      window.removeEventListener('resize', handleVideoSrcSet);
-    }
-  }, [])
+      window.removeEventListener("resize", handleVideoSrcSet);
+    };
+  }, []);
 
   useGSAP(() => {
     gsap.to(".hero-title", {
@@ -47,7 +42,7 @@ const Hero = () => {
         toggleActions: "play pause restart restart",
       },
       onComplete: () => {
-        videoRef.current.play();
+        if (videoRef.current) videoRef.current.play();
       },
     });
   }, []);
@@ -57,15 +52,25 @@ const Hero = () => {
       <div className="h-5/6 w-full flex-center flex-col">
         <p className="hero-title">iPhone 15 Pro</p>
         <div className="md:w-10/12 w-9/12">
-          <video className="pointer-events-none" id="heroVideo" autoPlay muted playsInline key={videoSrc} ref={videoRef}>
-            <source src={videoSrc} type="video/mp4"/>
-          </video>
+          {videoSrc && ( // Only render the video if videoSrc is set
+            <video
+              className="pointer-events-none"
+              id="heroVideo"
+              autoPlay
+              muted
+              playsInline
+              key={videoSrc}
+              ref={videoRef}
+            >
+              <source src={videoSrc} type="video/mp4" />
+            </video>
+          )}
         </div>
       </div>
 
       <div id="cta" className="flex flex-col items-center opacity-0 translate-y-20">
-      <Link href="#highlights" className="btn">Buy</Link>
-      <p className="font-normal text-xl">From $199/month or $999</p>
+        <Link href="#highlights" className="btn">Buy</Link>
+        <p className="font-normal text-xl">From $199/month or $999</p>
       </div>
     </section>
   );

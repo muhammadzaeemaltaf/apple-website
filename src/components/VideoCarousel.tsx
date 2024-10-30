@@ -8,13 +8,20 @@ import { useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+interface VideoState {
+  isEnd: boolean;
+  startPlay: boolean;
+  videoId: number;
+  isLastVideo: boolean;
+  isPlaying: boolean;
+}
 
 const VideoCarousel = () => {
   const videoRef = useRef<HTMLVideoElement[]>([]);
   const videoSpanRef = useRef<HTMLSpanElement[]>([]);
   const videoDivRef = useRef<HTMLDivElement[]>([]);
 
-  const [video, setVideo] = useState({
+  const [video, setVideo] = useState<VideoState>({
     isEnd: false,
     startPlay: false,
     videoId: 0,
@@ -22,22 +29,21 @@ const VideoCarousel = () => {
     isPlaying: false,
   });
 
-  const [loadedData, setLoadedData] = useState<any>([]);
+  const [loadedData, setLoadedData] = useState<HTMLMediaElement[]>([]);
 
   const { isEnd, isLastVideo, startPlay, videoId, isPlaying } = video;
 
   useGSAP(() => {
-
     gsap.to('#slider', {
       transform: `translateX(${-100 * videoId}%)`,
       duration: 2,
       ease: 'power2.inOut'
-    })
+    });
 
     gsap.to("#video", {
       scrollTrigger: {
         trigger: "#video",
-        start: "top 80%", 
+        start: "top 80%",
         toggleActions: "restart none none none",
       },
       onComplete: () => {
@@ -60,8 +66,8 @@ const VideoCarousel = () => {
     }
   }, [startPlay, videoId, isPlaying, loadedData]);
 
-  const handleLoadedData = (i:any, e:any) => {
-    setLoadedData((pre: any) => [...pre, e]);
+  const handleLoadedData = (i: number, e: any) => {
+    setLoadedData((pre) => [...pre, e.target]);
   };
 
   useEffect(() => {
@@ -69,7 +75,6 @@ const VideoCarousel = () => {
     let span = videoSpanRef.current;
 
     if (span[videoId]) {
-      // Animate the progress of video
       let anim = gsap.to(span[videoId], {
         onUpdate: () => {
           const progress = Math.ceil(anim.progress() * 100);
@@ -174,8 +179,8 @@ const VideoCarousel = () => {
                   playsInline={true}
                   preload="auto"
                   className={`${
-                      list.id === 2 && 'translate-x-44'
-                    } pointer-events-none`}
+                    list.id === 2 && 'translate-x-44'
+                  } pointer-events-none`}
                   ref={(el) => {
                     videoRef.current[i] = el!;
                   }}

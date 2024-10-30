@@ -13,7 +13,7 @@ interface ModelViewProps {
   gsapType: string;
   controlRef: RefObject<any>;
   setRotationState: (rotation: number) => void;
-  item: { img: string };
+  item: { title: string; color: string[]; img?: string };
 }
 
 const ModelView: React.FC<ModelViewProps> = ({
@@ -24,7 +24,7 @@ const ModelView: React.FC<ModelViewProps> = ({
   setRotationState,
   item,
 }) => {
-  const { progress } = useProgress(); // Read progress
+  const { progress } = useProgress();
 
   return (
     <View
@@ -53,7 +53,7 @@ const ModelView: React.FC<ModelViewProps> = ({
             name={`${index === 1 ? "small" : "large"}`}
             position={[0, 0, 0]}
           >
-            <Suspense fallback={null}>
+            <Suspense fallback={<Loader />}>
               <IPhone scale={index === 1 ? [15, 15, 15] : [17, 17, 17]} item={item} />
             </Suspense>
           </group>

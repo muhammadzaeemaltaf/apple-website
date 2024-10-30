@@ -1,7 +1,3 @@
-"use client";
-
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import ModelView from "./ModelView";
 import { yellowImg } from "@/utils";
@@ -10,6 +6,8 @@ import { Canvas } from "@react-three/fiber";
 import { View } from "@react-three/drei";
 import { models, sizes } from "@/constants";
 import { animateWithGsapTimeline } from "@/utils/animation";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 const Model = () => {
   const [size, setSize] = useState("small");
@@ -89,6 +87,8 @@ const Model = () => {
 
             <Canvas
               className="w-full h-full"
+              dpr={[1, 2]}
+              shadows={false}
               style={{
                 position: "fixed",
                 top: 0,
