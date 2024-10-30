@@ -26,26 +26,28 @@ const Hero = () => {
   }, []);
 
   useGSAP(() => {
-    gsap.to(".hero-title", {
-      opacity: 1,
-      delay: 2,
-    });
-    gsap.to("#cta", {
-      opacity: 1,
-      y: -50,
-      delay: 2,
-    });
+    if (videoSrc && videoRef.current) { // Only run GSAP animations if videoSrc is set and ref is not null
+      gsap.to(".hero-title", {
+        opacity: 1,
+        delay: 2,
+      });
+      gsap.to("#cta", {
+        opacity: 1,
+        y: -50,
+        delay: 2,
+      });
 
-    gsap.to("#heroVideo", {
-      scrollTrigger: {
-        trigger: "#heroVideo",
-        toggleActions: "play pause restart restart",
-      },
-      onComplete: () => {
-        if (videoRef.current) videoRef.current.play();
-      },
-    });
-  }, []);
+      gsap.to("#heroVideo", {
+        scrollTrigger: {
+          trigger: "#heroVideo",
+          toggleActions: "play pause restart restart",
+        },
+        onComplete: () => {
+          videoRef.current?.play();
+        },
+      });
+    }
+  }, [videoSrc]); // Add videoSrc to dependencies to ensure it only runs after videoSrc is set
 
   return (
     <section className="w-full nav-height bg-black relative">
@@ -58,6 +60,7 @@ const Hero = () => {
               id="heroVideo"
               autoPlay
               muted
+              preload="auto"
               playsInline
               key={videoSrc}
               ref={videoRef}
